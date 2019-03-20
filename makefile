@@ -6,3 +6,6 @@ Nbody: nbody.o main.o
 
 nbody.o: nbody.hpp
 main.o: nbody.hpp
+
+clean:
+	rm -f Nbody *.o
