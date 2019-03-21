@@ -8,7 +8,7 @@ using nbody::Nbody;
 
 int main() {
 
-  T dt = 1.;
+  T dt = 10000.;
   int N,i=0;
   std::string line;
   std::getline(std::cin, line);
@@ -36,7 +36,7 @@ int main() {
   std::cerr << "[+] STARTING SIMULATION" << std::endl;
   std::cout << nbody.str();
   
-  int Steps = 2;
+  int Steps = 5000;
   for (int i=0; i<Steps; i++) {
     nbody.step(); 
     std::cout << nbody.str();

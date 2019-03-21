@@ -21,8 +21,8 @@ namespace nbody {
     this->xs = xs; this->ys = ys;
     this->ms = ms;
     this->vx = vx; this->vy = vy;
-    fx = new T[SIZE(xs)](); 
-    fy = new T[SIZE(xs)]();
+    fx = new T[N](); 
+    fy = new T[N]();
     this->N = N;
   }
 
@@ -32,17 +32,27 @@ namespace nbody {
   }
 
   void Nbody::step() {
+    f_reset();
+    
     int i;
     for (i=0; i<N; i++) add_force(i);
-    std::cerr << "FORCES: " << std::endl;
-    for (i=0; i<N; i++) std::cerr << fx[i] << " " << fy[i] << std::endl;
     
+    std::cerr << "FORCES: ";
+    for (i=0; i<N; i++) std::cerr << fx[i] << " " << fy[i] << "   ";
+    std::cerr << std::endl;
+
+
+    std::cerr << "VELS: ";
     for (i=0; i<N; i++) {
-      vx[i] = dt * fx[i] / ms[i];
-      vy[i] = dt * fy[i] / ms[i];
-      xs[i] = dt * vx[i];
-      ys[i] = dt * vy[i];
+      vx[i] += dt * fx[i] / ms[i];
+      vy[i] += dt * fy[i] / ms[i];
+      
+      std::cerr << vx[i] << " " << vy[i] << "   ";
+      
+      xs[i] += dt * vx[i];
+      ys[i] += dt * vy[i];
     }
+    std::cerr << std::endl;
     tick++;
   }
 
@@ -61,7 +71,6 @@ namespace nbody {
   }
 
   void Nbody::add_force(int idx) {
-    f_reset();
     
     T dx,dy,dist,F;
     for (int i=0; i<N; i++) {
@@ -70,12 +79,12 @@ namespace nbody {
       dy = ys[i] - ys[idx];
 
       dist = distance(idx, i); 
-      std::cerr << "DIST: " << dist << " G: " << G << std::endl;
-      std::cerr << "[+] " << (G * ms[idx]) << std::endl;
+      //std::cerr << "DIST: " << dist << " G: " << G << std::endl;
+      //std::cerr << "[+] " << (G * ms[idx]) << std::endl;
 
       F = 0.;
       if (dist > 1e-10f) F = (G * ms[idx] * ms[i]) / (dist*dist);
-      std::cerr << "F " << F << std::endl;
+      //std::cerr << "F " << F << std::endl;
       
       fx[idx] += F * dx / dist;
       fy[idx] += F * dy / dist;
