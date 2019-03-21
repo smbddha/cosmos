@@ -9,7 +9,7 @@
 
 namespace nbody {
   Nbody::Nbody() {}
-  Nbody::Nbody(float *xs, float *ys, float *ms, float *vx, float *vy, float dt) {
+  Nbody::Nbody(int N, T *xs, T *ys, T *ms, T *vx, T *vy, T dt) {
     if (SIZE(xs) != SIZE(ys) || 
         SIZE(xs) != SIZE(ms) || 
         SIZE(xs) != SIZE(vx) ||
@@ -21,19 +21,22 @@ namespace nbody {
     this->xs = xs; this->ys = ys;
     this->ms = ms;
     this->vx = vx; this->vy = vy;
-    fx = new float[SIZE(xs)](); 
-    fy = new float[SIZE(xs)]();
-    N = SIZE(xs);
+    fx = new T[SIZE(xs)](); 
+    fy = new T[SIZE(xs)]();
+    this->N = N;
   }
 
   Nbody::~Nbody() {
-    free(xs); free(ys); free(ms); free(vx); free(vy);
-    free(fx); free(fy);
+    delete[] xs; delete[] ys; delete[] ms; delete[] vx; delete[] vy;
+    delete[] fx; delete[] fy;
   }
 
   void Nbody::step() {
     int i;
     for (i=0; i<N; i++) add_force(i);
+    std::cerr << "FORCES: " << std::endl;
+    for (i=0; i<N; i++) std::cerr << fx[i] << " " << fy[i] << std::endl;
+    
     for (i=0; i<N; i++) {
       vx[i] = dt * fx[i] / ms[i];
       vy[i] = dt * fy[i] / ms[i];
@@ -60,14 +63,20 @@ namespace nbody {
   void Nbody::add_force(int idx) {
     f_reset();
     
-    float dx,dy,dist,F;
+    T dx,dy,dist,F;
     for (int i=0; i<N; i++) {
       if (i == idx) continue;
       dx = xs[i] - xs[idx];
       dy = ys[i] - ys[idx];
 
       dist = distance(idx, i); 
-      F = (G * ms[idx] * ms[i]) / (dist*dist);
+      std::cerr << "DIST: " << dist << " G: " << G << std::endl;
+      std::cerr << "[+] " << (G * ms[idx]) << std::endl;
+
+      F = 0.;
+      if (dist > 1e-10f) F = (G * ms[idx] * ms[i]) / (dist*dist);
+      std::cerr << "F " << F << std::endl;
+      
       fx[idx] += F * dx / dist;
       fy[idx] += F * dy / dist;
     }
@@ -79,9 +88,10 @@ namespace nbody {
     }
   }
 
-  float Nbody::distance(int idx1, int idx2) {
-    float dx = xs[idx2] - xs[idx1];
-    float dy = ys[idx2] - ys[idx2];
+  T Nbody::distance(int idx1, int idx2) {
+    T dx = xs[idx2] - xs[idx1];
+    T dy = ys[idx2] - ys[idx1];
+    std::cerr << "dx: " << dx << " dy: " << dy << std::endl;
     return std::sqrt(dx*dx + dy*dy);
   }
 }

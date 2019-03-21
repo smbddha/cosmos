@@ -8,7 +8,7 @@ using nbody::Nbody;
 
 int main() {
 
-  float dt = 0.001;
+  T dt = 1.;
   int N,i=0;
   std::string line;
   std::getline(std::cin, line);
@@ -16,26 +16,27 @@ int main() {
   std::istringstream in(line);
   in >> N; 
  
-  float *xs,*ys,*ms,*vx,*vy;
-  xs = new float[N]();
-  ys = new float[N]();
-  ms = new float[N]();
-  vx = new float[N]();
-  vy = new float[N]();
+  T *xs,*ys,*ms,*vx,*vy;
+  xs = new T[N]();
+  ys = new T[N]();
+  ms = new T[N]();
+  vx = new T[N]();
+  vy = new T[N]();
 
   while(std::getline(std::cin, line) && i < N) {
     std::istringstream l(line);
     l >> ms[i] >> xs[i] >> ys[i] >> vx[i] >> vy[i];
+    i++;
   }
 
-  std::cout << "GOT " << N << " BODIES" << std::endl;
+  std::cout << N << std::endl;
 
-  Nbody nbody(xs,ys,ms,vx,vy,dt);
+  Nbody nbody(N, xs,ys,ms,vx,vy,dt);
 
-  std::cout << "[+] STARTING SIMULATION" << std::endl;
+  std::cerr << "[+] STARTING SIMULATION" << std::endl;
   std::cout << nbody.str();
   
-  int Steps = 50;
+  int Steps = 2;
   for (int i=0; i<Steps; i++) {
     nbody.step(); 
     std::cout << nbody.str();

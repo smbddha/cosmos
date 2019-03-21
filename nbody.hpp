@@ -3,11 +3,13 @@
 
 #include <string>
 
+#include "Constants.h"
+
 namespace nbody {
   class Nbody {
   public:
     Nbody();
-    Nbody(float *xs, float *ys, float *ms, float *vx, float *vy, float dt);
+    Nbody(int N, T *xs, T *ys, T *ms, T *vx, T *vy, T dt);
     ~Nbody();
 
     void step();
@@ -15,26 +17,25 @@ namespace nbody {
 
     std::string str();
   private:
-    float dt;
+    T dt;
 
-    float *xs;
-    float *ys;
-    float *ms;
-    float *vx;
-    float *vy;
+    T *xs;
+    T *ys;
+    T *ms;
+    T *vx;
+    T *vy;
 
-    float *fx;
-    float *fy; 
+    T *fx;
+    T *fy; 
 
     // # of bodies
     int N;
     size_t tick;
 
-    float distance(int, int);
+    T distance(int, int);
     void add_force(int);
     void f_reset();
 
-    static constexpr float G = 6.673e-11f;
   };
 }
 
