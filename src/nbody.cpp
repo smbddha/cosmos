@@ -8,7 +8,27 @@
 #define SIZE(x) (sizeof(x)/sizeof(*x))
 
 namespace nbody {
-  Nbody::Nbody() {}
+  Nbody::Nbody() {
+    N = 2;
+    ms = new T[N]();
+    xs = new T[N]();
+    ys = new T[N]();
+    vx = new T[N]();
+    vy = new T[N]();
+
+    ms[0] = 1.989e30; ms[1] = 0.330e34;
+    xs[0] = 0.0; xs[1] = 0.0;
+    ys[0] = 0.0; ys[1] = 57.9e9;
+    vx[0] = 0.0; vx[1] = 47.3e3;
+    vy[0] = 0.0; vy[1] = 0.0;
+    
+    fx = new T[N](); 
+    fy = new T[N]();
+    N = 2;
+  
+    dt = 100.;
+  }
+  
   Nbody::Nbody(int N, T *xs, T *ys, T *ms, T *vx, T *vy, T dt) {
     if (SIZE(xs) != SIZE(ys) || 
         SIZE(xs) != SIZE(ms) || 
@@ -37,22 +57,13 @@ namespace nbody {
     int i;
     for (i=0; i<N; i++) add_force(i);
     
-    std::cerr << "FORCES: ";
-    for (i=0; i<N; i++) std::cerr << fx[i] << " " << fy[i] << "   ";
-    std::cerr << std::endl;
-
-
-    std::cerr << "VELS: ";
     for (i=0; i<N; i++) {
       vx[i] += dt * fx[i] / ms[i];
       vy[i] += dt * fy[i] / ms[i];
       
-      std::cerr << vx[i] << " " << vy[i] << "   ";
-      
       xs[i] += dt * vx[i];
       ys[i] += dt * vy[i];
     }
-    std::cerr << std::endl;
     tick++;
   }
 
@@ -79,12 +90,9 @@ namespace nbody {
       dy = ys[i] - ys[idx];
 
       dist = distance(idx, i); 
-      //std::cerr << "DIST: " << dist << " G: " << G << std::endl;
-      //std::cerr << "[+] " << (G * ms[idx]) << std::endl;
 
       F = 0.;
       if (dist > 1e-10f) F = (G * ms[idx] * ms[i]) / (dist*dist);
-      //std::cerr << "F " << F << std::endl;
       
       fx[idx] += F * dx / dist;
       fy[idx] += F * dy / dist;
@@ -97,10 +105,20 @@ namespace nbody {
     }
   }
 
+  float Nbody::get(int i, int j) {
+    switch(i) {
+      case 1:
+        return rescale(xs[j], -60e10, 60e10, 0.0, 1.0);
+      case 2:
+        return rescale(ys[j], -60e10, 60e10, 0.0, 1.0);
+      default:
+        return 0.;
+    } 
+  }
+
   T Nbody::distance(int idx1, int idx2) {
     T dx = xs[idx2] - xs[idx1];
     T dy = ys[idx2] - ys[idx1];
-    std::cerr << "dx: " << dx << " dy: " << dy << std::endl;
     return std::sqrt(dx*dx + dy*dy);
   }
 }

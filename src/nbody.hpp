@@ -15,6 +15,10 @@ namespace nbody {
     void step();
     void step(int n);
 
+    float get(int i, int j);
+
+    void setDt(dt) this->dt = dt; 
+    
     std::string str();
   private:
     T dt;
@@ -36,6 +40,9 @@ namespace nbody {
     void add_force(int);
     void f_reset();
 
+    inline float rescale(T x, T a, T b, T yMin, T yMax) {
+	    return (float) (yMin + (x - a) / (b - a) * (yMax - yMin));
+    }
   };
 }
 
