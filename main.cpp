@@ -8,6 +8,7 @@ using nbody::Nbody;
 
 int main() {
 
+  float dt = 0.001;
   int N,i=0;
   std::string line;
   std::getline(std::cin, line);
@@ -24,13 +25,21 @@ int main() {
 
   while(std::getline(std::cin, line) && i < N) {
     std::istringstream l(line);
-    l >> xs[i] >> ys[i] >> ms[i] >> vx[i] >> vy[i];
+    l >> ms[i] >> xs[i] >> ys[i] >> vx[i] >> vy[i];
   }
 
-  Nbody nbody(xs,ys,ms,vx,vy,0.01);
+  std::cout << "GOT " << N << " BODIES" << std::endl;
 
-  int Steps = 5000;
+  Nbody nbody(xs,ys,ms,vx,vy,dt);
+
+  std::cout << "[+] STARTING SIMULATION" << std::endl;
+  std::cout << nbody.str();
+  
+  int Steps = 50;
   for (int i=0; i<Steps; i++) {
     nbody.step(); 
+    std::cout << nbody.str();
   }
+
+  return(0);
 }

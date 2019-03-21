@@ -21,7 +21,8 @@ namespace nbody {
     this->xs = xs; this->ys = ys;
     this->ms = ms;
     this->vx = vx; this->vy = vy;
-    fx = new float[SIZE(xs)]; fx = new float[SIZE(xs)];
+    fx = new float[SIZE(xs)](); 
+    fy = new float[SIZE(xs)]();
     N = SIZE(xs);
   }
 
@@ -48,16 +49,17 @@ namespace nbody {
 
   std::string Nbody::str() {
     std::ostringstream o;
-    o << "TICK " << tick << std::endl;
     for (int i=0;i<N;i++) {
-      o << "x: " << xs[i] << " y: " << ys[i]
-        << " vx: " << vx[i] << " vy: " << vy[i]
+      o << xs[i] << " " << ys[i] << " "
+        << vx[i] << " " << vy[i]
         << std::endl;
     }
     return o.str();
   }
 
   void Nbody::add_force(int idx) {
+    f_reset();
+    
     float dx,dy,dist,F;
     for (int i=0; i<N; i++) {
       if (i == idx) continue;
@@ -68,6 +70,12 @@ namespace nbody {
       F = (G * ms[idx] * ms[i]) / (dist*dist);
       fx[idx] += F * dx / dist;
       fy[idx] += F * dy / dist;
+    }
+  }
+
+  void Nbody::f_reset() {
+    for (int i=0; i<N; i++) {
+      fx[i] = 0.; fy[i] = 0.;
     }
   }
 
