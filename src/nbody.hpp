@@ -16,8 +16,10 @@ namespace nbody {
     void step(int n);
 
     float get(int i, int j);
+    int getN() {return N;};
 
     void setDt(float dt) { this->dt = (T) dt; } 
+    void parseFile(std::string filename);
     
     std::string str();
   private:
@@ -39,6 +41,11 @@ namespace nbody {
     T distance(int, int);
     void add_force(int);
     void f_reset();
+
+    void deallocate();
+
+    template<typename S>
+    void parseInput(S st);
 
     inline float rescale(T x, T a, T b, T yMin, T yMax) {
 	    return (float) (yMin + (x - a) / (b - a) * (yMax - yMin));

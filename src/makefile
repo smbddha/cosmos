@@ -8,7 +8,7 @@ nbody.o: nbody.hpp
 main.o: nbody.hpp
 
 test:
-	./Nbody 2> /dev/null | ../vis/visual.py
+	./Nbody 2> /dev/null | python3 ../vis/visual.py
 
 clean:
 	rm -f Nbody *.o

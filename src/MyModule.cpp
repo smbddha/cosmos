@@ -36,12 +36,20 @@ struct MyModule : Module {
 	// - toJson, fromJson: serialization of internal data
 	// - onSampleRateChange: event triggered by a change of sample rate
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
+
+  bool dumbFlag = false; 
 };
 
 
 void MyModule::step() {
 	// Implement a simple sine oscillator
 	float deltaTime = engineGetSampleTime();
+
+  if (!dumbFlag) {
+    nb.parseFile("/Users/bdds/projects/vcv/Rack/plugins/cosmos/src/small.txt");
+    dumbFlag = true;
+    printf("N: %d\n", nb.getN());
+  }
 
   float dt = params[DT_PARAM].value;
   if (pDt != dt) nb.setDt(dt);
@@ -63,7 +71,7 @@ void MyModule::step() {
 
 struct MyModuleWidget : ModuleWidget {
 	MyModuleWidget(MyModule *module) : ModuleWidget(module) {
-		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule.svg")));
+		setPanel(SVG::load(assetPlugin(plugin, "res/CosmosPanel.svg")));
 
 		addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));

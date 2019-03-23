@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <exception>
 #include <cmath>
 #include <sstream>
@@ -24,7 +25,6 @@ namespace nbody {
     
     fx = new T[N](); 
     fy = new T[N]();
-    N = 2;
   
     dt = 10.;
   }
@@ -47,6 +47,10 @@ namespace nbody {
   }
 
   Nbody::~Nbody() {
+    deallocate();
+  }
+
+  void Nbody::deallocate() {
     delete[] xs; delete[] ys; delete[] ms; delete[] vx; delete[] vy;
     delete[] fx; delete[] fy;
   }
@@ -70,6 +74,41 @@ namespace nbody {
 
   void Nbody::step(int n) {
     for (int i=0; i<n; i++) step();
+  }
+
+  template<typename S>
+  void Nbody::parseInput(S st) {
+    deallocate();
+    
+    int i=0;
+    std::string line;
+    std::getline(st, line);
+
+    std::istringstream in(line);
+    in >> N; 
+   
+    xs = new T[N]();
+    ys = new T[N]();
+    ms = new T[N]();
+    vx = new T[N]();
+    vy = new T[N]();
+    fx = new T[N](); 
+    fy = new T[N]();
+
+    while(std::getline(st, line) && i < N) {
+      std::istringstream l(line);
+      l >> ms[i] >> xs[i] >> ys[i] >> vx[i] >> vy[i];
+      i++;
+    }
+  }
+
+  void Nbody::parseFile(std::string filename) {
+    std::ifstream f;
+    f.open(filename);
+    parseInput<std::ifstream&>(f);
+    f.close();
+    
+    std::cerr << "FILE PARSED" <<std::endl;
   }
 
   std::string Nbody::str() {
