@@ -6,7 +6,7 @@ using nbody::Nbody;
 
 struct MyModule : Module {
 	enum ParamIds {
-		PITCH_PARAM,
+		DT_PARAM,
 		NUM_PARAMS
 	};
 	enum InputIds {
@@ -25,6 +25,8 @@ struct MyModule : Module {
 	float phase = 0.0;
 	float blinkPhase = 0.0;
 
+  float pDt = 100.0;
+
   Nbody nb = Nbody();
 
 	MyModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
@@ -40,7 +42,10 @@ struct MyModule : Module {
 void MyModule::step() {
 	// Implement a simple sine oscillator
 	float deltaTime = engineGetSampleTime();
-	
+
+  float dt = params[DT_PARAM].value;
+  if (pDt != dt) nb.setDt(dt);
+
 	// Compute the sine output
 	float sig = nb.get(1,1);
 
@@ -65,7 +70,7 @@ struct MyModuleWidget : ModuleWidget {
 		addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(28, 87), module, MyModule::PITCH_PARAM, -3.0, 3.0, 0.0));
+		addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(28, 87), module, MyModule::DT_PARAM, 100.0, 10000.0, 0.0));
 
 		addInput(Port::create<PJ301MPort>(Vec(33, 186), Port::INPUT, module, MyModule::PITCH_INPUT));
 

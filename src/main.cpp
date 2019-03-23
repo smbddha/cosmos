@@ -9,6 +9,8 @@ using nbody::Nbody;
 int main() {
 
   T dt = 10000.;
+  
+  /*
   int N,i=0;
   std::string line;
   std::getline(std::cin, line);
@@ -29,11 +31,13 @@ int main() {
     i++;
   }
 
-  std::cout << N << std::endl;
+  */
+  std::cout << 2 << std::endl;
+  //Nbody nbody(N, xs,ys,ms,vx,vy,dt);
 
-  Nbody nbody(N, xs,ys,ms,vx,vy,dt);
+  Nbody nbody = Nbody();
 
-  std::cerr << "[+] STARTING SIMULATION" << std::endl;
+  //std::cerr << "[+] STARTING SIMULATION" << std::endl;
   std::cout << nbody.str();
   
   int Steps = 5000;

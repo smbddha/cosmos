@@ -17,7 +17,7 @@ namespace nbody {
 
     float get(int i, int j);
 
-    void setDt(dt) this->dt = dt; 
+    void setDt(float dt) { this->dt = (T) dt; } 
     
     std::string str();
   private:

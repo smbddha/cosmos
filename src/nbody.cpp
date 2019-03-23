@@ -16,7 +16,7 @@ namespace nbody {
     vx = new T[N]();
     vy = new T[N]();
 
-    ms[0] = 1.989e30; ms[1] = 0.330e34;
+    ms[0] = 1.989e30; ms[1] = 0.330e24;
     xs[0] = 0.0; xs[1] = 0.0;
     ys[0] = 0.0; ys[1] = 57.9e9;
     vx[0] = 0.0; vx[1] = 47.3e3;
@@ -26,7 +26,7 @@ namespace nbody {
     fy = new T[N]();
     N = 2;
   
-    dt = 100.;
+    dt = 10.;
   }
   
   Nbody::Nbody(int N, T *xs, T *ys, T *ms, T *vx, T *vy, T dt) {
@@ -65,6 +65,7 @@ namespace nbody {
       ys[i] += dt * vy[i];
     }
     tick++;
+
   }
 
   void Nbody::step(int n) {
@@ -108,9 +109,9 @@ namespace nbody {
   float Nbody::get(int i, int j) {
     switch(i) {
       case 1:
-        return rescale(xs[j], -60e10, 60e10, 0.0, 1.0);
+        return rescale(xs[j], -57.9e9, 57.9e9, -1.0, 1.0);
       case 2:
-        return rescale(ys[j], -60e10, 60e10, 0.0, 1.0);
+        return rescale(ys[j], -57.9e9, 57.9e9, -1.0, 1.0);
       default:
         return 0.;
     } 
