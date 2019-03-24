@@ -76,6 +76,13 @@ namespace nbody {
     for (int i=0; i<n; i++) step();
   }
 
+  void Nbody::changePos(int x, int y, T val) {
+    
+    std::cerr << "Pos: " << xs[x] << "  ";
+    xs[x] += val;
+    std::cerr << "Changed pos: " << xs[x] << std::endl;
+  }
+
   template<typename S>
   void Nbody::parseInput(S st) {
     deallocate();
@@ -146,6 +153,7 @@ namespace nbody {
   }
 
   float Nbody::get(int i, int j) {
+    if (j >= N) return 0.0;
     switch(i) {
       case 1:
         return rescale(xs[j], -57.9e9, 57.9e9, -1.0, 1.0);

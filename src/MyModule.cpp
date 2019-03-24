@@ -10,12 +10,21 @@ struct MyModule : Module {
 		NUM_PARAMS
 	};
 	enum InputIds {
-		PITCH_INPUT,
-		NUM_INPUTS
+		VAR0_INPUT,
+    VAR1_INPUT,
+    VAR2_INPUT,
+    VAR3_INPUT,
+    VAR4_INPUT,
+    NUM_MODS,
+    NUM_INPUTS
 	};
 	enum OutputIds {
-		SINE_OUTPUT,
-		NUM_OUTPUTS
+		SIN0_OUTPUT,
+		SIN1_OUTPUT,
+    SIN2_OUTPUT,
+    SIN3_OUTPUT,
+    SIN4_OUTPUT,
+    NUM_OUTPUTS
 	};
 	enum LightIds {
 		BLINK_LIGHT,
@@ -26,6 +35,8 @@ struct MyModule : Module {
 	float blinkPhase = 0.0;
 
   float pDt = 100.0;
+
+  float mods[NUM_MODS];
 
   Nbody nb = Nbody();
 
@@ -46,20 +57,37 @@ void MyModule::step() {
 	float deltaTime = engineGetSampleTime();
 
   if (!dumbFlag) {
-    nb.parseFile("/Users/bdds/projects/vcv/Rack/plugins/cosmos/src/small.txt");
+    nb.parseFile("/home/bdds/projects/vcv/Rack/plugins/cosmos/src/small.txt");
     dumbFlag = true;
     printf("N: %d\n", nb.getN());
   }
+
+  
+  for (int i=0; i<NUM_MODS; i++) {
+    mods[i] = 0.f;
+    if (inputs[(InputIds) i].active) 
+      mods[i] = inputs[(InputIds) i].value * (nb.get(1,i+1) * 0.1f);
+  }
+  
 
   float dt = params[DT_PARAM].value;
   if (pDt != dt) nb.setDt(dt);
 
 	// Compute the sine output
-	float sig = nb.get(1,1);
+  float sig0,sig1,sig2,sig3,sig4;
+  sig0 = nb.get(1,1) + mods[0];
+  sig1 = nb.get(1,2) + mods[1];
+  sig2 = nb.get(1,3) + mods[2];
+  sig3 = nb.get(1,4) + mods[3];
+  sig4 = nb.get(1,5) + mods[4];
 
-	outputs[SINE_OUTPUT].value = 5.0f * sig;
+	outputs[SIN0_OUTPUT].value = 5.0f * sig0;
+  outputs[SIN1_OUTPUT].value = 5.0f * sig1;
+  outputs[SIN2_OUTPUT].value = 5.0f * sig2;
+  outputs[SIN3_OUTPUT].value = 5.0f * sig3;
+  outputs[SIN4_OUTPUT].value = 5.0f * sig4;
 
-	// Blink light at 1Hz
+  // Blink light at 1Hz
 	blinkPhase += deltaTime;
 	if (blinkPhase >= 1.0f)
 		blinkPhase -= 1.0f;
@@ -80,9 +108,18 @@ struct MyModuleWidget : ModuleWidget {
 
 		addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(28, 87), module, MyModule::DT_PARAM, 100.0, 10000.0, 0.0));
 
-		addInput(Port::create<PJ301MPort>(Vec(33, 186), Port::INPUT, module, MyModule::PITCH_INPUT));
+		addInput(Port::create<PJ301MPort>(Vec(55, 255), Port::INPUT, module, MyModule::VAR0_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(90, 255), Port::INPUT, module, MyModule::VAR1_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(125, 255), Port::INPUT, module, MyModule::VAR2_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(160, 255), Port::INPUT, module, MyModule::VAR3_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(195, 255), Port::INPUT, module, MyModule::VAR4_INPUT));
 
-		addOutput(Port::create<PJ301MPort>(Vec(33, 275), Port::OUTPUT, module, MyModule::SINE_OUTPUT));
+		addOutput(Port::create<PJ301MPort>(Vec(55, 294.6), Port::OUTPUT, module, MyModule::SIN0_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(90, 294.6), Port::OUTPUT, module, MyModule::SIN1_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(125, 294.6), Port::OUTPUT, module, MyModule::SIN2_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(160, 294.6), Port::OUTPUT, module, MyModule::SIN3_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(195, 294.6), Port::OUTPUT, module, MyModule::SIN4_OUTPUT));
+
 
 		addChild(ModuleLightWidget::create<MediumLight<RedLight>>(Vec(41, 59), module, MyModule::BLINK_LIGHT));
 	}

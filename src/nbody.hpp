@@ -20,7 +20,9 @@ namespace nbody {
 
     void setDt(float dt) { this->dt = (T) dt; } 
     void parseFile(std::string filename);
-    
+
+    void changePos(int x, int y, T val);
+
     std::string str();
   private:
     T dt;
